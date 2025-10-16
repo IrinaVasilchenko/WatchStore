@@ -1,0 +1,281 @@
+﻿@* @model WatchShop.Utilities.PaginatedList<WatchShop.Models.Watch>
+
+@{
+    ViewData["Title"] = "Watch Catalog";
+}
+
+<h2>Watch Catalog</h2>
+
+<div class="admin-login">
+    <a href="@Url.Action("Login", "Admin")" class="btn btn-primary">Login</a>
+</div>
+
+<div class="filter-section">
+    <form asp-action="Index" asp-controller="Watches" method="get">
+        <label for="minPrice">Min Price:</label>
+        <input type="number" id="minPrice" name="minPrice" />
+        <label for="maxPrice">Max Price:</label>
+        <input type="number" id="maxPrice" name="maxPrice" />
+        <label for="brandId">Filter by Brand:</label>
+        <select id="brandId" name="brandId">
+            <option value="">All Brands</option>
+            @foreach (var brand in ViewBag.Brands)
+            {
+                <option value="@brand.BrandId">@brand.Name</option>
+            }
+        </select>
+        <select id="genderId" name="genderId">
+            <option value="">All Genders</option>
+            @foreach (var gender in ViewBag.Genders)
+            {
+                <option value="@gender.GenderId">@gender.Name</option>
+            }
+        </select>
+        <label for="styleId">Filter by Style:</label>
+        <select id="styleId" name="styleId">
+            <option value="">All Styles</option>
+            @foreach (var style in ViewBag.Styles)
+            {
+                <option value="@style.StyleId">@style.Name</option>
+            }
+        </select>
+
+        <label for="colorId">Filter by Color:</label>
+        <select id="colorId" name="colorId">
+            <option value="">All Colors</option>
+            @foreach (var color in ViewBag.Colors)
+            {
+                <option value="@color.ColorId">@color.Name</option>
+            }
+        </select>
+
+        <label for="materialId">Filter by Material:</label>
+        <select id="materialId" name="materialId">
+            <option value="">All Materials</option>
+            @foreach (var material in ViewBag.Materials)
+            {
+                <option value="@material.MaterialId">@material.Name</option>
+            }
+        </select>
+
+        <label for="mechanismId">Filter by Mechanism:</label>
+        <select id="mechanismId" name="mechanismId">
+            <option value="">All Mechanisms</option>
+            @foreach (var mechanism in ViewBag.Mechanisms)
+            {
+                <option value="@mechanism.MechanismTypeId">@mechanism.Name</option>
+            }
+        </select>
+        <button type="submit">Apply Filter</button>
+    </form>
+</div>
+
+<div class="catalog">
+    @foreach (var watch in Model.Items)
+    {
+        <div class="catalog-item">
+            <a href="@Url.Action("Details", "Watches", new { id = watch.WatchId })">
+                <img src="data:@watch.ImageMimeType;base64,@Convert.ToBase64String(watch.ImageData)" alt="@watch.Model" />
+            </a>
+            <h3>@watch.Model</h3>
+            <p>Price: $@watch.Price</p>
+            <form asp-action="AddToCart" asp-controller="Cart" method="post">
+                <input type="hidden" name="watchId" value="@watch.WatchId" />
+                <button type="submit" class="btn btn-primary">Add to Basket</button>
+            </form>
+        </div>
+    }
+</div>
+
+<div class="pagination">
+    @if (Model.HasPreviousPage)
+    {
+        <a href="?page=@(Model.PageIndex - 1)">Previous</a> <!-- Поправил ссылку на предыдущую страницу -->
+    }
+    Page @Model.PageIndex of @Model.TotalPages
+    @if (Model.HasNextPage)
+    {
+        <a href="?page=@(Model.PageIndex + 1)">Next</a> <!-- Поправил ссылку на следующую страницу -->
+    }
+</div>
+
+<style>
+    .catalog {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Сетка 4 колонки */
+        gap: 10px;
+    }
+
+    .catalog-item {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+        .catalog-item img {
+            max-width: 100%;
+            height: auto;
+        }
+</style> *@
+@model WatchesShop.Utilities.PaginatedList<WatchesShop.Models.Watch>
+
+@{
+    ViewData["Title"] = "Watch Catalog";
+    var minPriceValue = Context.Request.Query["minPrice"].FirstOrDefault();
+    var maxPriceValue = Context.Request.Query["maxPrice"].FirstOrDefault();
+    var selectedBrandId = Context.Request.Query["brandId"].FirstOrDefault();
+    var selectedGenderId = Context.Request.Query["genderId"].FirstOrDefault();
+    var selectedStyleId = Context.Request.Query["styleId"].FirstOrDefault();
+    var selectedColorId = Context.Request.Query["colorId"].FirstOrDefault();
+    var selectedMaterialId = Context.Request.Query["materialId"].FirstOrDefault();
+    var selectedMechanismId = Context.Request.Query["mechanismId"].FirstOrDefault();
+}
+
+<h2 style="text-align: center;">Watch Catalog</h2>
+
+
+<div class="row">
+    <!-- Sidebar for filters -->
+    <div class="col-md-3">
+        <h4>Filters</h4>
+        <form asp-action="Index" asp-controller="Watches" method="get">
+            <!-- Min Price -->
+            <div class="form-group">
+                <label for="minPrice">Min Price:</label>
+                <input type="number" id="minPrice" name="minPrice" class="form-control" value="@minPriceValue" />
+            </div>
+
+            <!-- Max Price -->
+            <div class="form-group">
+                <label for="maxPrice">Max Price:</label>
+                <input type="number" id="maxPrice" name="maxPrice" class="form-control" value="@maxPriceValue" />
+            </div>
+
+            <!-- Brand Filter -->
+            <div class="form-group">
+                <label for="brandId">Filter by Brand:</label>
+                <select id="brandId" name="brandId" class="form-control">
+                    <option value="">All Brands</option>
+                    @foreach (var brand in ViewBag.Brands)
+                    {
+                        <option value="@brand.BrandId" selected="@(selectedBrandId == brand.BrandId.ToString() ? "selected" : null)">@brand.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Gender Filter -->
+            <div class="form-group">
+                <label for="genderId">Filter by Gender:</label>
+                <select id="genderId" name="genderId" class="form-control">
+                    <option value="">All Genders</option>
+                    @foreach (var gender in ViewBag.Genders)
+                    {
+                        <option value="@gender.GenderId" selected="@(selectedGenderId == gender.GenderId.ToString() ? "selected" : null)">@gender.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Style Filter -->
+            <div class="form-group">
+                <label for="styleId">Filter by Style:</label>
+                <select id="styleId" name="styleId" class="form-control">
+                    <option value="">All Styles</option>
+                    @foreach (var style in ViewBag.Styles)
+                    {
+                        <option value="@style.StyleId" selected="@((selectedStyleId == style.StyleId.ToString()) ? "selected" : null)">@style.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Color Filter -->
+            <div class="form-group">
+                <label for="colorId">Filter by Color:</label>
+                <select id="colorId" name="colorId" class="form-control">
+                    <option value="">All Colors</option>
+                    @foreach (var color in ViewBag.Colors)
+                    {
+                        <option value="@color.ColorId" selected="@((selectedColorId == color.ColorId.ToString()) ? "selected" : null)">@color.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Material Filter -->
+            <div class="form-group">
+                <label for="materialId">Filter by Material:</label>
+                <select id="materialId" name="materialId" class="form-control">
+                    <option value="">All Materials</option>
+                    @foreach (var material in ViewBag.Materials)
+                    {
+                        <option value="@material.MaterialId" selected="@((selectedMaterialId == material.MaterialId.ToString()) ? "selected" : null)">@material.Name</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Mechanism Filter -->
+            <div class="form-group">
+                <label for="mechanismId">Filter by Mechanism:</label>
+                <select id="mechanismId" name="mechanismId" class="form-control">
+                    <option value="">All Mechanisms</option>
+                    @foreach (var mechanism in ViewBag.Mechanisms)
+                    {
+                        <option value="@mechanism.MechanismTypeId" selected="@((selectedMechanismId == mechanism.MechanismTypeId.ToString()) ? "selected" : null)">@mechanism.Name</option>
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+        </form>
+    </div>
+
+    <!-- Main content for watch catalog -->
+    <div class="col-md-9">
+        <div class="catalog">
+            @foreach (var watch in Model.Items)
+            {
+                <div class="catalog-item">
+                    <a href="@Url.Action("Details", "Watches", new { id = watch.WatchId })">
+                        <img src="~/@watch.ImagePath" alt="@watch.Model" />
+                    </a>
+                    <h3>@watch.Model</h3>
+                    <p>Price: ₴@watch.Price</p>
+                    <form asp-action="AddToCart" asp-controller="Cart" method="post">
+                        <input type="hidden" name="watchId" value="@watch.WatchId" />
+                        <button type="submit" class="btn btn-primary">Add to Basket</button>
+                    </form>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            @if (Model.HasPreviousPage)
+            {
+                <a href="?page=@(Model.PageIndex - 1)">Previous</a>
+            }
+            Page @Model.PageIndex of @Model.TotalPages
+            @if (Model.HasNextPage)
+            {
+                <a href="?page=@(Model.PageIndex + 1)">Next</a>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .catalog {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .catalog-item {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .catalog-item img {
+        max-width: 100%;
+        height: auto;
+    }
+</style>

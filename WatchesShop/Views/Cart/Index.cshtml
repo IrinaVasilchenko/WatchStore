@@ -1,0 +1,49 @@
+﻿@model WatchesShop.Models.Cart
+
+<h2>Shopping Cart</h2>
+
+@if (Model.Items.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Watch.Model</td>
+                    <td>@item.Quantity</td>
+                    <td>$@item.Watch.Price</td>
+                    <td>$@(item.Watch.Price * item.Quantity)</td>
+                    <td>
+                        <form asp-action="RemoveFromCart" asp-controller="Cart" method="post">
+                            <input type="hidden" name="watchId" value="@item.Watch.WatchId" />
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"></td>
+                <td><strong>Total:</strong></td>
+                <td><strong>$@Model.ComputeTotalValue()</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+}
+else
+{
+    <p>Your cart is empty.</p>
+}
+
+<a asp-action="Checkout" class="btn btn-primary">Proceed to Checkout</a>
+

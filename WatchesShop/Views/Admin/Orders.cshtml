@@ -1,0 +1,62 @@
+﻿@model IEnumerable<WatchesShop.Models.Order>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h2>Orders</h2>
+
+<form asp-action="UpdateOrders" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>Email</th>
+                <th>Order Date</th>
+                <th>Items</th>
+                <th>Shipped</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Count(); i++)
+            {
+                var order = Model.ElementAt(i);
+                <tr>
+                    <td>@order.OrderId</td>
+                    <td>@order.Name</td>
+                    <td>@order.Address</td>
+                    <td>@order.Email</td>
+                    <td>@order.OrderDate.ToString("g")</td>
+                    <td>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Watch</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in order.OrderItems)
+                                {
+                                    <tr>
+                                        <td>@item.Watch.Model</td>
+                                        <td>@item.Quantity</td>
+                                        <td>@item.Price</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                        <input type="hidden" asp-for="@Model.ElementAt(i).OrderId" name="orders[@i].OrderId" />
+                        <input type="checkbox" asp-for="@Model.ElementAt(i).IsShipped" name="orders[@i].IsShipped" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>

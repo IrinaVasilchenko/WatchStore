@@ -1,0 +1,21 @@
+﻿@model WatchesShop.Models.Watch
+
+@{
+    ViewBag.Title = "Edit Watch";
+}
+
+<h2>Edit Watch</h2>
+
+<form asp-action="EditWatch" method="post">
+    <div class="form-group">
+        <label for="WatchId">Select Watch Model</label>
+        <select asp-for="WatchId" class="form-control">
+            <option value="">-- Select Watch Model --</option>
+            @foreach (var watch in ViewBag.Watches)
+            {
+                <option value="@watch.WatchId">@watch.Model</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Edit</button>
+</form>

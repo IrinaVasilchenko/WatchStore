@@ -1,0 +1,55 @@
+﻿@model WatchesShop.Models.Watch
+
+@{
+    ViewData["Title"] = "Watch Details";
+}
+
+<div class="watch-details">
+    <div class="image-section">
+        <img src="~/@Model.ImagePath" alt="@Model.Model" style="max-width: 200px; height: auto;" />
+    </div>
+    <div class="details-section">
+        <h2>Watch: @Model.Brand.Name @Model.Model</h2>
+        <p>Price: ₴@Model.Price</p>
+        <form asp-action="AddToCart" asp-controller="Cart" method="post">
+            <input type="hidden" name="watchId" value="@Model.WatchId" />
+            <button type="submit" class="btn btn-primary">Add to Basket</button>
+        </form>
+        <h3>Details</h3>
+        <p>Gender: @Model.Gender.Name</p>
+        <p>Mechanism: @Model.MechanismType.Name</p>
+        <p>Style: @Model.Style.Name</p>
+        <p>Case Material: @Model.Case.Material.Name</p>
+        <p>Case Color: @Model.Case.Color.Name</p>
+        <p>Diameter: @Model.Case.Diameter mm</p>
+        <p>Length: @Model.Case.LengthCase mm</p>
+        <p>Thickness: @Model.Case.Thickness mm</p>
+        <p>Water Resistance: @Model.Case.WaterResistance m</p>
+        <p>Weight: @Model.Case.Weight g</p>
+        <a href="javascript:history.go(-1);" class="btn-back">Back</a>
+    </div>
+</div>
+
+<style>
+    .watch-details {
+        display: flex;
+        gap: 20px;
+    }
+
+    .image-section {
+        flex: 1;
+    }
+
+    .details-section {
+        flex: 2;
+    }
+
+        .details-section h2, .details-section p {
+            margin: 0 0 10px;
+        }
+
+        .details-section button {
+            display: block;
+            margin-bottom: 20px;
+        }
+</style>

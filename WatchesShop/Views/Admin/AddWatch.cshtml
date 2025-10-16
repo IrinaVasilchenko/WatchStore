@@ -1,0 +1,118 @@
+﻿@model WatchesShop.Models.Watch
+
+<form asp-action="AddWatch" method="post" enctype="multipart/form-data">
+    <a href="@Url.Action("EditWatch", "Admin")" class="btn btn-secondary mt-3">Edit Watch</a>
+    <a href="@Url.Action("Orders", "Admin")" class="btn btn-secondary mt-3">View Order</a>
+    <div class="form-group">
+        <label asp-for="Model"></label>
+        <input asp-for="Model" class="form-control" />
+        <span asp-validation-for="Model" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="GenderId"></label>
+        <select asp-for="GenderId" class="form-control">
+            <option value="">-- Select Gender --</option>
+            @foreach (var gender in ViewBag.Genders)
+            {
+                <option value="@gender.GenderId">@gender.Name</option>
+            }
+        </select>
+        <span asp-validation-for="GenderId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="BrandId"></label>
+        <select asp-for="BrandId" class="form-control">
+            <option value="">-- Select Brand --</option>
+            @foreach (var brand in ViewBag.Brands)
+            {
+                <option value="@brand.BrandId">@brand.Name</option>
+            }
+        </select>
+        <span asp-validation-for="BrandId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="StyleId"></label>
+        <select asp-for="StyleId" class="form-control">
+            <option value="">Select Style</option>
+            @foreach (var style in ViewBag.Styles)
+            {
+                <option value="@style.StyleId">@style.Name</option>
+            }
+        </select>
+        <span asp-validation-for="StyleId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="MechanismTypeId"></label>
+        <select asp-for="MechanismTypeId" class="form-control">
+            <option value="">Select Mechanism Type</option>
+            @foreach (var mechanism in ViewBag.Mechanisms)
+            {
+                <option value="@mechanism.MechanismTypeId">@mechanism.Name</option>
+            }
+        </select>
+        <span asp-validation-for="MechanismTypeId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="AssemblyFactory"></label>
+        <input asp-for="AssemblyFactory" class="form-control" />
+        <span asp-validation-for="AssemblyFactory" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Case.Diameter"></label>
+        <input asp-for="Case.Diameter" class="form-control" />
+        <span asp-validation-for="Case.Diameter" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Case.MaterialId"></label>
+        <select asp-for="Case.MaterialId" class="form-control">
+            <option value="">Select Material</option>
+            @foreach (var material in ViewBag.Materials)
+            {
+                <option value="@material.MaterialId">@material.Name</option>
+            }
+        </select>
+        <span asp-validation-for="Case.MaterialId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Case.WaterResistance"></label>
+        <input asp-for="Case.WaterResistance" class="form-control" />
+        <span asp-validation-for="Case.WaterResistance" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Case.LengthCase"></label>
+        <input asp-for="Case.LengthCase" class="form-control" />
+        <span asp-validation-for="Case.LengthCase" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Case.Thickness"></label>
+        <input asp-for="Case.Thickness" class="form-control" />
+        <span asp-validation-for="Case.Thickness" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Case.Weight"></label>
+        <input asp-for="Case.Weight" class="form-control" />
+        <span asp-validation-for="Case.Weight" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Case.ColorId"></label>
+        <select asp-for="Case.ColorId" class="form-control">
+            <option value="">Select Color</option>
+            @foreach (var color in ViewBag.Colors)
+            {
+                <option value="@color.ColorId">@color.Name</option>
+            }
+        </select>
+        <span asp-validation-for="Case.ColorId" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label for="ImageData">Upload Image</label>
+        <input type="file" id="ImageData" name="ImageData" class="form-control" />
+        <span class="text-danger">@(ViewData.ModelState["ImageData"]?.Errors.FirstOrDefault()?.ErrorMessage)</span>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Watch</button>
+</form>
