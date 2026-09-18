@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: watchesshop-db
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-data:/var/opt/mssql
+    healthcheck:
+      test: [
+        "CMD-SHELL",
+        "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q 'SELECT 1' || exit 1"
+      ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: watchesshop-web
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Docker
+      ConnectionStrings__DefaultConnection: >-
+        Server=db;Database=WatchesShop;User Id=sa;Password=YourStrong!Passw0rd;
+        TrustServerCertificate=True;Encrypt=False
+      Webhook__OrderCreatedUrl: "https://webhook.site/f50e42a9-02a7-4c84-9454-01ec181bc4b5"
+      # Program.cs читає GetConnectionString("DefaultConnection") —
+      # ASP.NET Core сам підхопить це через змінну оточення
+      # (подвійне підкреслення = роздільник рівнів конфігурації)
+    ports:
+      - "8080:8080"
+    volumes:
+      # щоб завантажені через AdminController зображення не губились
+      # при перестворенні контейнера
+      - watch-images:/app/wwwroot/images
+
+volumes:
+  mssql-data:
+  watch-images:

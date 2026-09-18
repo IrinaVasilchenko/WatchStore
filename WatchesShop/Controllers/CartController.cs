@@ -89,6 +89,7 @@ namespace WatchesShop.Controllers
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
+            await _notificationService.NotifyOrderCreatedAsync(order);
 
             // Подготовьте содержание письма для продавца
             var subject = "New Order Received";
@@ -115,5 +116,13 @@ namespace WatchesShop.Controllers
             return View();
         }
 
+        private readonly IOrderNotificationService _notificationService;
+
+        public CartController(IWatchService watchService, WatchContext context, IOrderNotificationService notificationService)
+        {
+            _watchService = watchService;
+            _context = context;
+            _notificationService = notificationService;
+        }
     }
 }

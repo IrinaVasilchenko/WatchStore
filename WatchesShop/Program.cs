@@ -20,6 +20,12 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<Cart>();
 builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddHttpClient<IOrderNotificationService, OrderNotificationService>();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "WatchesShop API", Version = "v1" });
+});
 builder.Services.AddTransient<AdminController>();
 
 // Настраиваем кэширование и сессии
@@ -40,6 +46,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WatchesShop API v1"));
+
 // Настройка конвейера
 if (!app.Environment.IsDevelopment())
 {
@@ -47,7 +56,10 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsEnvironment("Docker"))
+{
+    app.UseHttpsRedirection();
+}
 app.UseStaticFiles();
 
 app.UseRouting();
@@ -62,6 +74,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Watches}/{action=Index}/{id?}");
 
+app.MapControllers();
 // Создаём базу данных при запуске, если она не создана
 using (var scope = app.Services.CreateScope())
 {
